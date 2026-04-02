@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0 fw-semibold">Nuevo Pedido</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Cliente</label>
+                {{ form.cliente }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fecha</label>
+                <div class="d-flex gap-2">
+                    {{ form.fecha }}
+                    <button type="button" 
+                            class="btn btn-outline-dark btn-sm"
+                            onclick="ponerHoy()">
+                        Hoy
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                {{ form.estado }}
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/" class="text-muted text-decoration-none small icon-hover">
+                    ← Volver
+                </a>
+                <button type="submit" class="btn btn-dark">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function ponerHoy() {
+    const inputFecha = document.querySelector('input[name="fecha"]');
+
+    const hoy = new Date();
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, '0');
+    const day = String(hoy.getDate()).padStart(2, '0');
+
+    inputFecha.value = `${year}-${month}-${day}`;
+}
+</script>
+{% endblock %}

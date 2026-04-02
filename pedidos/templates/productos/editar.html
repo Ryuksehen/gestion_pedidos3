@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0 fw-semibold">Editar Producto</h5>
+    </div>
+
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                {{ form.nombre }}
+                {% if form.nombre.errors %}
+                <div class="text-danger small mt-1">{{ form.nombre.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Precio</label>
+                {{ form.precio }}
+                {% if form.precio.errors %}
+                <div class="text-danger small mt-1">{{ form.precio.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Stock</label>
+                {{ form.stock }}
+                {% if form.stock.errors %}
+                <div class="text-danger small mt-1">{{ form.stock.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/productos/" class="text-muted text-decoration-none small icon-hover"> ← Volver </a>
+                <button type="button" class="btn btn-dark" onclick="confirmarGuardar()"> Guardar cambios </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function confirmarGuardar() {
+    Swal.fire({
+        title: '¿Guardar cambios?',
+        text: 'Se actualizarán los datos del producto.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#212529',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.querySelector('form').submit();
+        }
+    });
+}
+</script>
+
+{% endblock %}
