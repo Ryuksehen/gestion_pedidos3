@@ -1,6 +1,24 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 from . import views
 from . import reportes
+from .views.api import (
+    ClienteViewSet,
+    ProductoViewSet,
+    PedidoViewSet,
+    DetallePedidoViewSet,
+    ApiLoginView,
+    ApiLogoutView,
+    ApiRegistroView,
+)
+
+
+# aqui registramos rutas automaticas del crud rest
+router = DefaultRouter()
+router.register(r'api/clientes', ClienteViewSet, basename='api-clientes')
+router.register(r'api/productos', ProductoViewSet, basename='api-productos')
+router.register(r'api/pedidos', PedidoViewSet, basename='api-pedidos')
+router.register(r'api/detalles', DetallePedidoViewSet, basename='api-detalles')
 
 
 # aqui juntamos todas las rutas del modulo pedidos
@@ -46,4 +64,12 @@ urlpatterns = [
     path('exportar/clientes/json/',              reportes.exportar_clientes_json),
     path('exportar/productos/json/',             reportes.exportar_productos_json),
     path('exportar/pedidos/detallado/json/',     reportes.exportar_pedidos_detallado_json),
+
+    # aqui van rutas de autenticacion api jwt
+    path('api/auth/login/', ApiLoginView.as_view(), name='api_login'),
+    path('api/auth/logout/', ApiLogoutView.as_view(), name='api_logout'),
+    path('api/auth/registro/', ApiRegistroView.as_view(), name='api_registro'),
 ]
+
+# aqui anexamos rutas del router rest
+urlpatterns += router.urls
