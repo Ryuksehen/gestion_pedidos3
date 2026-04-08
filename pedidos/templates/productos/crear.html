@@ -4,7 +4,7 @@
 
 <div class="card shadow-sm border-0">
 
-    <!-- HEADER -->
+    
     <div class="card-header bg-white border-bottom">
         <h5 class="mb-0 fw-semibold">Nuevo Producto</h5>
     </div>
@@ -14,7 +14,7 @@
         <form method="post">
             {% csrf_token %}
 
-            <!-- NOMBRE -->
+            
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 {{ form.nombre }}
@@ -23,7 +23,7 @@
                 {% endif %}
             </div>
 
-            <!-- PRECIO -->
+            
             <div class="mb-3">
                 <label class="form-label">Precio</label>
                 {{ form.precio }}
@@ -32,7 +32,7 @@
                 {% endif %}
             </div>
 
-            <!-- STOCK -->
+            
             <div class="mb-3">
                 <label class="form-label">Stock</label>
                 {{ form.stock }}
@@ -41,7 +41,7 @@
                 {% endif %}
             </div>
 
-            <!-- BOTONES -->
+            
             <div class="d-flex justify-content-between">
 
                 <a href="/productos/" class="text-muted text-decoration-none small icon-hover">

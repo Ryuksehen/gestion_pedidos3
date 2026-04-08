@@ -4,7 +4,7 @@
 
 <div class="card shadow-sm border-0">
 
-    <!-- HEADER -->
+    
     <div class="card-header bg-white border-bottom">
         <h5 class="mb-0 fw-semibold">Editar Pedido</h5>
     </div>
@@ -14,25 +14,34 @@
         <form method="post">
             {% csrf_token %}
 
-            <!-- CLIENTE -->
+            
             <div class="mb-3">
                 <label class="form-label">Cliente</label>
                 {{ form.cliente }}
+                {% if form.cliente.errors %}
+                    <div class="text-danger small mt-1">{{ form.cliente.errors|join:", " }}</div>
+                {% endif %}
             </div>
 
-            <!-- FECHA -->
+            
             <div class="mb-3">
                 <label class="form-label">Fecha</label>
                 {{ form.fecha }}
+                {% if form.fecha.errors %}
+                    <div class="text-danger small mt-1">{{ form.fecha.errors|join:", " }}</div>
+                {% endif %}
             </div>
 
-            <!-- ESTADO -->
+            
             <div class="mb-3">
                 <label class="form-label">Estado</label>
                 {{ form.estado }}
+                {% if form.estado.errors %}
+                    <div class="text-danger small mt-1">{{ form.estado.errors|join:", " }}</div>
+                {% endif %}
             </div>
 
-            <!-- BOTONES -->
+            
             <div class="d-flex justify-content-between">
 
                 <a href="/" class="text-muted text-decoration-none small icon-hover">
