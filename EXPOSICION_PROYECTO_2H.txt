@@ -1,0 +1,463 @@
+GUIA COMPLETA PARA EXPONER EL PROYECTO (2 HORAS)
+Sistema de gestion de pedidos con Django + JWT + API REST
+
+==================================================
+0) COMO USAR ESTE TXT
+==================================================
+
+- Lee primero la seccion 1 (resumen ejecutivo).
+- Luego estudia la seccion 2 (guion por tiempo).
+- Para practicar preguntas del profesor, usa la seccion 11.
+- Para repaso express 10 minutos antes de exponer, usa seccion 14.
+
+Meta realista:
+- No necesitas ser senior.
+- Necesitas explicar claro que problema resuelve, como esta hecho y como se prueba.
+
+
+==================================================
+1) RESUMEN EJECUTIVO (LO QUE DICES EN 2-3 MINUTOS)
+==================================================
+
+Frase de apertura:
+"Este proyecto es un sistema de gestion de pedidos desarrollado con Django y MySQL.
+Permite administrar clientes, productos, pedidos y detalles de pedido.
+Incluye autenticacion con JWT y ahora tambien una API REST para consumo JSON."
+
+Que problema resuelve:
+- Evita llevar pedidos en papel o Excel desordenado.
+- Centraliza clientes, productos, stock y estado de pedidos.
+- Permite exportar reportes en PDF, Excel y JSON.
+
+Que tecnologias usa:
+- Backend: Django.
+- Base de datos: MySQL.
+- Plantillas web: Django templates.
+- API REST: Django REST Framework.
+- Seguridad: JWT propio del proyecto.
+
+Valor agregado del proyecto:
+- Tiene capa web para uso humano.
+- Tiene capa API para integrar app movil, frontend externo o Postman.
+
+
+==================================================
+2) GUION DE 2 HORAS (CRONOGRAMA MINUTO A MINUTO)
+==================================================
+
+Bloque 1 (0-10 min): Introduccion
+- Presentacion personal.
+- Objetivo del sistema.
+- Problema que resuelve.
+- Vista general de modulos.
+
+Bloque 2 (10-25 min): Arquitectura general
+- Estructura del proyecto Django.
+- app principal: pedidos.
+- relacion entre models, forms, views, urls, templates.
+
+Bloque 3 (25-45 min): Modelado de datos
+- Explicar entidades: Cliente, Producto, Pedido, DetallePedido.
+- Explicar relaciones entre tablas.
+- Explicar reglas de negocio basicas.
+
+Bloque 4 (45-65 min): Capa web (HTML)
+- Login, listado, crear, editar, eliminar.
+- Flujo completo desde navegador.
+- Validaciones de formulario.
+
+Bloque 5 (65-85 min): Seguridad JWT
+- Que es JWT y por que se uso.
+- Como se crea token en login.
+- Como middleware valida token.
+- Cookie y Bearer token.
+
+Bloque 6 (85-105 min): API REST
+- Endpoints /api/auth y CRUD /api/clientes, productos, pedidos, detalles.
+- Metodos GET, POST, PUT, PATCH, DELETE.
+- Prueba en Postman.
+
+Bloque 7 (105-115 min): Reportes y salidas
+- PDF, Excel, JSON.
+- Casos de uso reales.
+
+Bloque 8 (115-120 min): Cierre
+- Resumen final.
+- Que aprendiste.
+- Mejoras futuras.
+
+
+==================================================
+3) ESTRUCTURA DEL PROYECTO (COMO EXPLICARLA FACIL)
+==================================================
+
+Di esta idea:
+"Django organiza el codigo por responsabilidades."
+
+- models.py: define tablas y relaciones.
+- forms.py: valida datos de entrada en formularios web.
+- views/: contiene logica de negocio.
+  - auth.py: login, logout, registro y JWT.
+  - clientes.py, productos.py, pedidos.py, detalles.py: CRUD web.
+  - api.py: endpoints REST JSON.
+- urls.py: mapa de rutas.
+- templates/: interfaz HTML.
+- middleware.py: autenticacion JWT por request.
+- reportes.py: exportaciones PDF/Excel/JSON.
+
+Frase de apoyo:
+"Primero diseñe datos (models), luego reglas (views/forms), luego rutas (urls) y finalmente interfaz y API."
+
+
+==================================================
+4) MODELO DE DATOS (EXPLICACION SIMPLE)
+==================================================
+
+Entidad Cliente:
+- Guarda nombre, correo, direccion, telefono.
+
+Entidad Producto:
+- Guarda nombre, precio, stock.
+
+Entidad Pedido:
+- Pertenece a un cliente.
+- Tiene fecha y estado (pendiente, enviado, entregado).
+
+Entidad DetallePedido:
+- Une pedido con producto.
+- Tiene cantidad y subtotal.
+- Subtotal se calcula automaticamente en save.
+
+Relacion clave:
+- Un cliente puede tener muchos pedidos.
+- Un pedido puede tener muchos detalles.
+- Un producto puede estar en muchos detalles.
+
+Regla de negocio importante:
+- Si agrego un detalle, bajo stock.
+- Si edito un detalle, reajusto stock.
+- Si elimino un detalle, devuelvo stock.
+
+
+==================================================
+5) FLUJO FUNCIONAL COMPLETO (CASO REAL)
+==================================================
+
+Ejemplo narrado para exponer:
+
+1. Registro o login de usuario.
+2. Crear clientes.
+3. Crear productos con stock inicial.
+4. Crear pedido para un cliente.
+5. Agregar detalles al pedido (producto + cantidad).
+6. Sistema calcula subtotal y ajusta stock.
+7. Ver detalle de pedido y estado.
+8. Exportar reportes.
+
+Frase fuerte para profesor:
+"El sistema no solo guarda datos: aplica reglas de inventario para evitar inconsistencias de stock."
+
+
+==================================================
+6) JWT EXPLICADO PARA PRINCIPIANTE TOTAL
+==================================================
+
+Que es JWT en palabras simples:
+- Es un texto firmado que identifica al usuario.
+- Evita reenviar usuario y clave en cada request.
+
+Que guarda este proyecto en el token:
+- user_id
+- username
+- exp (fecha de vencimiento)
+
+Como funciona en este sistema:
+
+Paso 1: Login
+- Usuario envia username y password.
+- Si son validos, se crea token firmado con SECRET_KEY.
+
+Paso 2: Guardado
+- Se guarda en cookie httponly llamada jwt_token.
+- Tambien se puede usar en header Bearer.
+
+Paso 3: Validacion por request
+- Middleware lee cookie o header.
+- Verifica firma y expiracion.
+- Si valido, asigna request.user.
+
+Paso 4: Seguridad basica
+- Si token esta vencido o modificado, se rechaza.
+
+Respuesta corta si preguntan "por que JWT":
+"Porque me permite autenticar peticiones de forma stateless y reutilizable para web y API."
+
+
+==================================================
+7) API REST (LO QUE DEBES SABER DECIR)
+==================================================
+
+Diferencia web vs API:
+- Web devuelve HTML para navegador.
+- API devuelve JSON para clientes externos.
+
+Auth API:
+- POST /api/auth/login/
+- POST /api/auth/registro/
+- POST /api/auth/logout/
+
+CRUD REST:
+- /api/clientes/
+- /api/productos/
+- /api/pedidos/
+- /api/detalles/
+
+Metodos por recurso:
+- GET lista y detalle.
+- POST crear.
+- PUT actualizar completo.
+- PATCH actualizar parcial.
+- DELETE eliminar.
+
+Autorizacion:
+- Header: Authorization: Bearer TOKEN
+- o cookie jwt_token.
+
+Si preguntan "que devuelve":
+- JSON con datos de cada recurso.
+- codigos HTTP correctos (200, 201, 400, 401, etc).
+
+
+==================================================
+8) DEMO EN VIVO (PASO A PASO PARA QUE NO FALLES)
+==================================================
+
+Antes de exponer:
+- Verifica que servidor corre.
+- Verifica base de datos activa.
+- Ten usuario de prueba listo.
+- Ten 2-3 productos ya creados por si falla internet o tiempo.
+
+Demo web sugerida (10-15 min):
+1. Login.
+2. Listar clientes.
+3. Crear cliente nuevo.
+4. Crear producto nuevo.
+5. Crear pedido.
+6. Agregar detalle y mostrar cambio de stock.
+7. Mostrar reporte JSON o PDF.
+
+Demo API sugerida (10-15 min):
+1. Login API en Postman.
+2. Copiar token.
+3. GET /api/productos/
+4. POST /api/clientes/
+5. POST /api/pedidos/
+6. POST /api/detalles/
+7. GET /api/pedidos/
+
+Tip anti nervios:
+- Habla mientras haces clic: "Ahora pruebo esto porque..."
+
+
+==================================================
+9) VALIDACIONES Y REGLAS DE NEGOCIO
+==================================================
+
+Validaciones en formularios:
+- Nombre minimo y formato valido.
+- Correo valido.
+- Telefono numerico y largo correcto.
+- Precio mayor a cero.
+- Stock no negativo.
+- Fecha no futura en pedido.
+
+Reglas de eliminacion:
+- No borrar cliente con pedidos.
+- No borrar producto usado en detalles.
+- No borrar pedido con detalles.
+
+Control de inventario:
+- Crear detalle descuenta stock.
+- Editar detalle corrige stock.
+- Eliminar detalle devuelve stock.
+
+Frase para defender diseno:
+"Priorice integridad de datos para evitar ventas o pedidos inconsistentes."
+
+
+==================================================
+10) EXPORTACIONES Y REPORTES
+==================================================
+
+El sistema exporta:
+- PDF de pedidos, clientes, productos, detalles.
+- Excel general y excel de detalles.
+- JSON de clientes, productos y pedidos detallados.
+
+Por que importa:
+- PDF: presentacion formal.
+- Excel: analisis administrativo.
+- JSON: integracion tecnica.
+
+
+==================================================
+11) 30 PREGUNTAS TIPICAS DEL PROFESOR + RESPUESTA CORTA
+==================================================
+
+1) Que problema resuelve?
+Resuelve gestion centralizada de pedidos, clientes y productos con control de stock.
+
+2) Por que Django?
+Porque integra ORM, autenticacion, admin y estructura MVC rapida para productividad.
+
+3) Por que MySQL?
+Porque es robusto, conocido y suficiente para volumen academico/pyme.
+
+4) Que es un modelo?
+Es la representacion de una tabla y su logica basica en Django.
+
+5) Que es una vista?
+Es la logica que recibe request, procesa y responde HTML o JSON.
+
+6) Que es una URL en Django?
+Es el mapeo de una ruta HTTP hacia una vista.
+
+7) Que hace forms.py?
+Valida datos de entrada antes de guardar.
+
+8) Por que hiciste validaciones?
+Para evitar datos corruptos y errores de negocio.
+
+9) Que hace DetallePedido?
+Relaciona productos con pedidos y calcula subtotal.
+
+10) Donde se calcula subtotal?
+En save del modelo DetallePedido.
+
+11) Que hace el middleware JWT?
+Toma token por cookie/header, valida y autentica usuario en cada request.
+
+12) Que pasa si token esta vencido?
+Se rechaza y el usuario no se considera autenticado.
+
+13) Por que usar cookie httponly?
+Reduce riesgo de acceso por scripts del navegador.
+
+14) Que diferencia hay entre sesion y JWT?
+Sesion guarda estado en servidor; JWT valida con firma y puede ser stateless.
+
+15) Como probaste API?
+Con Postman: login, Bearer token y pruebas CRUD.
+
+16) Que codigos HTTP manejas?
+200 OK, 201 Created, 400 Bad Request, 401 Unauthorized.
+
+17) Que es serializer?
+Convierte modelo a JSON y valida datos JSON entrantes.
+
+18) Por que separar web y API?
+Permite atender navegador y clientes externos sin mezclar respuestas.
+
+19) Como proteges endpoints API?
+Con autenticacion JWT y permisos de usuario autenticado.
+
+20) Como manejas stock?
+Se descuenta al crear detalle, se ajusta al editar, se devuelve al eliminar.
+
+21) Cual fue reto principal?
+Mantener consistencia de stock en todas las operaciones CRUD.
+
+22) Que mejorarias?
+Refresh token, roles/permisos, tests automatos y documentacion OpenAPI.
+
+23) Hay paginacion?
+Si, en listados web con ListView y paginate_by.
+
+24) Hay reportes?
+Si, PDF/Excel/JSON.
+
+25) Que aprendiste realmente?
+Modelado relacional, validaciones, JWT, API REST y flujo completo CRUD.
+
+26) Que pasaria con concurrencia alta?
+Se debe mejorar con transacciones/locks para stock en alta carga.
+
+27) Que capa modificarias primero para nuevo campo?
+Modelo, migracion, serializer/form, vista y template/API.
+
+28) Que significa integridad referencial aqui?
+No permitir borrar registros padre cuando hijos dependen de ellos.
+
+29) Cual endpoint de auth usas en API?
+POST /api/auth/login/ para obtener token.
+
+30) Como cierras sesion API?
+POST /api/auth/logout/ y se borra cookie jwt_token.
+
+
+==================================================
+12) MINI GLOSARIO (PARA NO BLOQUEARTE)
+==================================================
+
+- CRUD: Crear, Leer, Actualizar, Eliminar.
+- ORM: capa para hablar con BD usando objetos Python.
+- Endpoint: URL de una funcionalidad API.
+- JSON: formato de intercambio de datos.
+- JWT: token firmado de autenticacion.
+- Middleware: codigo que corre entre request y response.
+- Serializer: traduce modelo <-> JSON.
+- Migracion: cambio versionado del esquema de BD.
+
+
+==================================================
+13) PLAN B SI ALGO FALLA EN LA DEMO
+==================================================
+
+Si falla internet:
+- Tu sistema local sigue funcionando.
+
+Si falla Postman:
+- Muestra endpoints desde navegador o cURL.
+
+Si falla login:
+- Explica flujo teorico y muestra codigo fuente de auth.
+
+Si falla BD:
+- Explica arquitectura y muestras pantallas/codigo.
+
+Frase anti panico:
+"Aunque la demo en vivo puede tener fallos tecnicos, el diseno y la implementacion del sistema estan completos y verificables en el codigo."
+
+
+==================================================
+14) REPASO RAPIDO (10 MIN ANTES DE EXPONER)
+==================================================
+
+Memoriza estas 12 frases:
+
+1. El sistema gestiona clientes, productos, pedidos y detalles.
+2. Use Django por rapidez y estructura limpia.
+3. La base de datos es MySQL.
+4. El modelo central de negocio es Pedido + DetallePedido.
+5. El stock se ajusta automaticamente en detalles.
+6. Tengo capa web y capa API REST.
+7. La autenticacion usa JWT propio.
+8. El token guarda user_id, username y exp.
+9. El middleware valida token por cookie o Bearer.
+10. La API tiene CRUD en /api/clientes, /api/productos, /api/pedidos y /api/detalles.
+11. El sistema exporta PDF, Excel y JSON.
+12. Mejora futura: refresh token, permisos finos y pruebas automatizadas.
+
+
+==================================================
+15) CIERRE FINAL (ULTIMO MINUTO DE EXPOSICION)
+==================================================
+
+Frase de cierre recomendada:
+"En conclusion, construí una solucion funcional de gestion de pedidos con reglas de negocio reales, seguridad JWT y API REST.
+El proyecto demuestra dominio de estructura Django, modelado relacional, validaciones y consumo de endpoints.
+Como siguiente paso, implementaria mas pruebas automaticas y mejoras de seguridad para entorno productivo."
+
+
+FIN DEL DOCUMENTO

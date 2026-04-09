@@ -175,6 +175,16 @@
 
     window.addEventListener('load', function () {
         mostrarFormulario('{{ active_form|default:"login" }}');
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('sesion') === 'seguridad') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sesion cerrada por seguridad',
+                text: 'Tu sesion expiro o el token no es valido. Inicia sesion nuevamente para continuar.',
+                confirmButtonText: 'Entendido'
+            });
+        }
     });
 </script>
 

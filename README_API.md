@@ -1,160 +1,231 @@
-# Guia rapida: JWT y API REST (Postman)
+# Guia API + Postman (JWT)
 
-## 1) Ahora que tiene el proyecto?
+Este documento explica:
+1. Donde se cambia la duracion del token JWT.
+2. Como obtener y usar el token en Postman.
+3. Como crear/usar usuarios para login desde Postman.
+4. Todos los endpoints para GET, POST, PUT y PATCH.
 
-Este proyecto ahora tiene dos capas:
-
-- App web Django (HTML) para uso en navegador.
-- API REST (JSON) bajo el prefijo /api/.
-
-Asi puedes usar el sistema desde formularios web o desde Postman/Frontend externo.
-
----
-
-## 2) Como funciona el JWT aqui
-
-El JWT es propio (implementado en codigo del proyecto), con firma HS256.
-
-Flujo simple:
-
-1. Haces login por API en /api/auth/login/.
-2. El servidor valida usuario y password.
-3. Si es correcto, responde un token y tambien lo guarda en cookie httponly jwt_token.
-4. En cada request de API, se acepta token por:
-   - Header Authorization: Bearer <token>
-   - o cookie jwt_token
-5. Si el token es valido y no vencio, la API deja pasar la peticion.
-
-Archivos clave:
-
-- pedidos/views/auth.py
-  - create_jwt_token(...)
-  - verify_jwt_token(...)
-- pedidos/api_auth.py
-  - JwtApiAuthentication
-- pedidos/views/api.py
-  - ApiLoginView, ApiLogoutView, ApiRegistroView
-- proyecto_pedidos/settings.py
-  - REST_FRAMEWORK con autenticacion JWT
-
----
-
-## 3) Base URL
+## 1) Base URL
 
 http://127.0.0.1:8000
 
----
+## 2) Donde modificar el tiempo de duracion del token
 
-## 4) Endpoints API REST (JSON)
+En este proyecto el JWT es manual (no usa SimpleJWT), por eso la duracion se cambia en codigo:
 
-## Auth API
+1. Archivo: pedidos/views/auth.py
+2. Funcion: create_jwt_token(user, expires_in=3600)
+3. Clave: el parametro expires_in esta en segundos.
 
+Ejemplo rapido:
+- 3600 = 1 hora
+- 7200 = 2 horas
+- 1800 = 30 minutos
+
+Ademas, para que la cookie coincida con ese tiempo, ajusta tambien max_age=3600 en:
+
+1. pedidos/views/auth.py (en login_view)
+2. pedidos/views/api.py (en ApiLoginView)
+
+Recomendacion:
+- Usa el mismo valor para expires_in y max_age, para evitar que el token y la cookie se desincronicen.
+
+## 3) Como obtener el token en Postman
+
+Endpoint:
 - POST /api/auth/login/
-  - body JSON:
-    - username
-    - password
 
+Body JSON:
+
+```json
+{
+  "username": "admin",
+  "password": "123456"
+}
+```
+
+Respuesta esperada (ejemplo):
+
+```json
+{
+  "mensaje": "Login correcto.",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "usuario": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@correo.com"
+  }
+}
+```
+
+Como usarlo en las demas requests:
+
+1. Ve a la pestana Headers.
+2. Agrega:
+   - Key: Authorization
+   - Value: Bearer TU_TOKEN
+
+Tambien funciona por cookie jwt_token, pero en Postman normalmente se usa mas el header Authorization.
+
+## 4) Usuarios de login desde Postman (crear, usar y editar)
+
+### 4.1 Crear usuario (registro)
+
+Endpoint:
 - POST /api/auth/registro/
-  - body JSON:
-    - username
-    - email
-    - password
 
-- POST /api/auth/logout/
-  - requiere JWT
+Body JSON:
 
-## Clientes API
+```json
+{
+  "username": "usuario1",
+  "email": "usuario1@correo.com",
+  "password": "clave123"
+}
+```
 
-- GET /api/clientes/
-- POST /api/clientes/
-- GET /api/clientes/{id}/
-- PUT /api/clientes/{id}/
-- PATCH /api/clientes/{id}/
-- DELETE /api/clientes/{id}/
+### 4.2 Seleccionar usuario para login
 
-Campos JSON:
-- nombre
-- correo
-- direccion
-- telefono
+No hay un endpoint para "seleccionar" usuario de forma visual.
+En Postman, seleccionas el usuario escribiendo su username y password en /api/auth/login/.
 
-## Productos API
+### 4.3 Editar usuarios de login
 
-- GET /api/productos/
-- POST /api/productos/
-- GET /api/productos/{id}/
-- PUT /api/productos/{id}/
-- PATCH /api/productos/{id}/
-- DELETE /api/productos/{id}/
+Actualmente NO existe endpoint API para editar usuarios (username/email/password) desde Postman.
 
-Campos JSON:
-- nombre
-- precio
-- stock
+Opciones actuales:
+1. Editarlo desde Django Admin: /admin/
+2. Crear uno nuevo con /api/auth/registro/
 
-## Pedidos API
+Si quieres, luego puedo agregarte endpoints de usuarios para GET, POST, PUT, PATCH y DELETE.
 
-- GET /api/pedidos/
-- POST /api/pedidos/
-- GET /api/pedidos/{id}/
-- PUT /api/pedidos/{id}/
-- PATCH /api/pedidos/{id}/
-- DELETE /api/pedidos/{id}/
+## 5) Endpoints disponibles para Postman
 
-Campos JSON:
-- cliente (id del cliente)
-- fecha (YYYY-MM-DD)
-- estado (pendiente|enviado|entregado)
+## 5.1 Autenticacion
 
-## Detalles API
+1. POST /api/auth/login/
+2. POST /api/auth/registro/
+3. POST /api/auth/logout/
 
-- GET /api/detalles/
-- POST /api/detalles/
-- GET /api/detalles/{id}/
-- PUT /api/detalles/{id}/
-- PATCH /api/detalles/{id}/
-- DELETE /api/detalles/{id}/
+## 5.2 Clientes
 
-Campos JSON:
-- pedido (id del pedido)
-- producto (id del producto)
-- cantidad
+1. GET /api/clientes/
+2. POST /api/clientes/
+3. GET /api/clientes/{id}/
+4. PUT /api/clientes/{id}/
+5. PATCH /api/clientes/{id}/
+6. DELETE /api/clientes/{id}/
 
-Nota:
-- subtotal es de solo lectura (lo calcula el sistema).
-- al crear/editar/eliminar detalles, se ajusta stock automaticamente.
+Body ejemplo POST/PUT:
 
----
+```json
+{
+  "nombre": "Juan Perez",
+  "correo": "juan@correo.com",
+  "direccion": "Av. Central 123",
+  "telefono": "987654321"
+}
+```
 
-## 5) Como probar en Postman
+Body ejemplo PATCH:
 
-1. Login:
-   - POST /api/auth/login/
-   - Body -> raw -> JSON:
-     {
-       "username": "tu_usuario",
-       "password": "tu_clave"
-     }
+```json
+{
+  "telefono": "999888777"
+}
+```
 
-2. Copia el token de la respuesta.
+## 5.3 Productos
 
-3. En las demas requests agrega header:
-   - Authorization: Bearer <token>
+1. GET /api/productos/
+2. POST /api/productos/
+3. GET /api/productos/{id}/
+4. PUT /api/productos/{id}/
+5. PATCH /api/productos/{id}/
+6. DELETE /api/productos/{id}/
 
-4. Prueba CRUD, por ejemplo:
-   - GET /api/clientes/
-   - POST /api/productos/
-   - PATCH /api/pedidos/1/
+Body ejemplo POST/PUT:
 
----
+```json
+{
+  "nombre": "Teclado mecanico",
+  "precio": "120.50",
+  "stock": 20
+}
+```
 
-## 6) Endpoints web antiguos (siguen funcionando)
+Body ejemplo PATCH:
 
-Tus rutas HTML no se eliminaron. Siguen activas para navegador:
+```json
+{
+  "stock": 15
+}
+```
 
-- /login/
-- /listar/
-- /clientes/
-- /productos/
-- /detalles/
-- /exportar/... (pdf/excel/json)
+## 5.4 Pedidos
+
+1. GET /api/pedidos/
+2. POST /api/pedidos/
+3. GET /api/pedidos/{id}/
+4. PUT /api/pedidos/{id}/
+5. PATCH /api/pedidos/{id}/
+6. DELETE /api/pedidos/{id}/
+
+Body ejemplo POST/PUT:
+
+```json
+{
+  "cliente": 1,
+  "fecha": "2026-04-08",
+  "estado": "pendiente"
+}
+```
+
+Body ejemplo PATCH:
+
+```json
+{
+  "estado": "enviado"
+}
+```
+
+## 5.5 Detalles de pedido
+
+1. GET /api/detalles/
+2. POST /api/detalles/
+3. GET /api/detalles/{id}/
+4. PUT /api/detalles/{id}/
+5. PATCH /api/detalles/{id}/
+6. DELETE /api/detalles/{id}/
+
+Body ejemplo POST/PUT:
+
+```json
+{
+  "pedido": 1,
+  "producto": 1,
+  "cantidad": 2
+}
+```
+
+Body ejemplo PATCH:
+
+```json
+{
+  "cantidad": 3
+}
+```
+
+Notas:
+1. subtotal es solo lectura, lo calcula el sistema.
+2. Si la cantidad supera el stock, la API devuelve error.
+3. Al crear/editar/eliminar detalles, el stock se ajusta automaticamente.
+
+## 6) Flujo recomendado en Postman (paso a paso)
+
+1. Registrar usuario en /api/auth/registro/ (si aun no existe).
+2. Hacer login en /api/auth/login/.
+3. Copiar token de la respuesta.
+4. Agregar header Authorization: Bearer TU_TOKEN.
+5. Probar CRUD (GET/POST/PUT/PATCH/DELETE) en clientes, productos, pedidos y detalles.

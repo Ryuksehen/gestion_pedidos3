@@ -106,7 +106,7 @@ class ApiLoginView(APIView):
             token,
             httponly=True,
             samesite='Lax',
-            max_age=3600,
+            max_age=30,
         )
         return response
 

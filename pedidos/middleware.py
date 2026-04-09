@@ -1,4 +1,5 @@
-from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
+from django.urls import reverse
 
 from .views.auth import verify_jwt_token
 
@@ -19,6 +20,7 @@ class JWTAuthenticationMiddleware:
     def __call__(self, request):
         if request.user.is_authenticated:
             return self.get_response(request)
+
         token = request.COOKIES.get('jwt_token')
         if not token:
             auth_header = request.META.get('HTTP_AUTHORIZATION', '')
@@ -29,6 +31,19 @@ class JWTAuthenticationMiddleware:
             user = verify_jwt_token(token)
             if user:
                 request.user = user
+            else:
+                ruta = request.path
+                es_api = ruta.startswith('/api/')
+                rutas_publicas = {
+                    reverse('login'),
+                    reverse('logout'),
+                    reverse('register'),
+                }
+
+                if not es_api and ruta not in rutas_publicas:
+                    response = redirect(f"{reverse('login')}?sesion=seguridad")
+                    response.delete_cookie('jwt_token')
+                    return response
 
         return self.get_response(request)
 

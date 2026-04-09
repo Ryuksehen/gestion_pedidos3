@@ -23,7 +23,7 @@ def _b64url_decode(data: str) -> bytes:
 
 
 # aqui armamos el jwt para guardar sesion
-def create_jwt_token(user, expires_in=3600):
+def create_jwt_token(user, expires_in=30):
     header = {'alg': 'HS256', 'typ': 'JWT'}
     payload = {
         'user_id': user.id,
