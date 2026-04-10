@@ -1,0 +1,87 @@
+REPORTE DE OPTIMIZACION QA - SISTEMA GESTION DE PEDIDOS
+Fecha: 09/04/2026
+Rol aplicado: QA Engineer / Tester tecnico
+
+1) OBJETIVO
+Se optimizaron defectos criticos detectados en la auditoria previa, priorizando:
+- Integridad de stock e importes en DetallePedido (API).
+- Validaciones de negocio para evitar cantidades invalidas.
+- Cobertura automatizada minima para prevenir regresiones.
+
+2) PROBLEMAS ENCONTRADOS (RESUMEN)
+- La API permitia cantidad = 0 y cantidad negativa en detalle de pedido.
+- Al permitir esos valores, se podia alterar stock de forma incorrecta.
+- No existian pruebas automatizadas en pedidos/tests.py.
+
+3) OPTIMIZACIONES IMPLEMENTADAS
+
+3.1 Archivo modificado: pedidos/serializers.py
+Mejoras aplicadas en DetallePedidoSerializer:
+
+A) validate(...)
+- Se agrego validacion explicita para cantidad obligatoria.
+- Se agrego regla de negocio: cantidad debe ser mayor a 0.
+- Se mantuvo validacion de stock en alta (create) cuando aplica.
+
+B) create(...)
+- Se cambio a transaccion atomica (transaction.atomic).
+- Se uso bloqueo de fila para producto (select_for_update).
+- Se revalida stock en tiempo real antes de descontar.
+- Se descuenta stock con guardado controlado (update_fields=['stock']).
+
+C) update(...)
+- Se cambio a transaccion atomica.
+- Se bloquea tanto el detalle como los productos involucrados.
+- Se devuelve stock original y luego se aplica el nuevo consumo.
+- Se valida stock disponible antes de confirmar.
+- Se maneja correctamente el caso de actualizar en el mismo producto o cambiar de producto.
+
+Resultado tecnico:
+- Se reduce riesgo de inconsistencia por concurrencia.
+- Se bloquea entrada de datos invalidos.
+- Se protege la integridad del inventario.
+
+3.2 Archivo modificado: pedidos/tests.py
+Se implementaron 4 pruebas automaticas nuevas:
+
+1. test_rechaza_cantidad_negativa
+- Verifica que la API no acepta cantidad negativa.
+
+2. test_rechaza_cantidad_cero
+- Verifica que la API no acepta cantidad en cero.
+
+3. test_create_descuenta_stock
+- Verifica que al crear detalle valido, el stock se descuenta correctamente.
+
+4. test_update_ajusta_stock_mismo_producto
+- Verifica que al editar cantidad en el mismo producto, el stock final queda correcto.
+
+4) EVIDENCIA DE VALIDACION
+Comando ejecutado:
+- manage.py test
+
+Resultado:
+- Found 4 test(s)
+- Ran 4 tests
+- OK
+
+Interpretacion:
+- Los cambios implementados funcionan correctamente bajo pruebas automatizadas.
+- El bug critico reportado queda cubierto por casos de prueba.
+
+5) IMPACTO POSITIVO
+- Mejora de calidad funcional: evita cantidades invalidas.
+- Mejora de calidad de datos: stock mas consistente.
+- Mejora de mantenibilidad: ahora hay pruebas que detectan regresiones tempranas.
+- Mejora de robustez en escenarios de concurrencia por uso de transacciones y bloqueos.
+
+6) RECOMENDACIONES SIGUIENTES (NO APLICADAS AUN)
+Para cerrar mas hallazgos del reporte completo se recomienda en una siguiente iteracion:
+- Migrar eliminaciones web de GET a POST/DELETE con proteccion CSRF completa.
+- Endurecer settings para produccion (DEBUG=False, ALLOWED_HOSTS, cookies seguras, HSTS, SSL redirect).
+- Mover credenciales y claves a variables de entorno.
+- Aumentar cobertura de pruebas para autenticacion JWT, CRUD y reportes.
+
+7) CONCLUSION
+Se realizo optimizacion efectiva sobre el riesgo mas critico detectado en API (cantidad/stock).
+La solucion quedo implementada, validada y documentada, con pruebas automatizadas pasando al 100% en el alcance aplicado.

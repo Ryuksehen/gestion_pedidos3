@@ -183,6 +183,10 @@
 </div>
 {% endfor %}
 
+<form id="formEliminarProducto" method="post" style="display:none;">
+    {% csrf_token %}
+</form>
+
 <script>
 function confirmarEliminacionProducto(id) {
   Swal.fire({
@@ -197,7 +201,9 @@ function confirmarEliminacionProducto(id) {
     cancelButtonText: 'Cancelar'
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = '/productos/eliminar/' + id;
+            const form = document.getElementById('formEliminarProducto');
+            form.action = '/productos/eliminar/' + id + '/';
+            form.submit();
     }
   });
 }

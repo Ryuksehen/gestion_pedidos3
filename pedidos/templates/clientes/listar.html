@@ -143,6 +143,10 @@
 </div>
 {% endfor %}
 
+<form id="formEliminarCliente" method="post" style="display:none;">
+    {% csrf_token %}
+</form>
+
 <script>
 function confirmarEliminacionCliente(id) {
   Swal.fire({
@@ -157,7 +161,9 @@ function confirmarEliminacionCliente(id) {
     cancelButtonText: 'Cancelar'
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = '/clientes/eliminar/' + id;
+            const form = document.getElementById('formEliminarCliente');
+            form.action = '/clientes/eliminar/' + id + '/';
+            form.submit();
     }
   });
 }

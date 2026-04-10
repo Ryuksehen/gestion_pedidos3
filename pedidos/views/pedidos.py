@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
@@ -108,6 +109,7 @@ def editar_pedido(request, pk):
 
 # aqui borramos pedido si no tiene detalles
 @login_required
+@require_POST
 def eliminar_pedido(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if pedido.detallepedido_set.exists():

@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
@@ -53,6 +54,7 @@ def editar_cliente(request, pk):
 
 # aqui borramos cliente si no tiene pedidos
 @login_required
+@require_POST
 def eliminar_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     if cliente.pedido_set.exists():

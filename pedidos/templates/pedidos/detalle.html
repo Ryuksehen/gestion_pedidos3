@@ -170,6 +170,10 @@
 </div>
 {% endfor %}
 
+<form id="formEliminarDetalle" method="post" style="display:none;">
+    {% csrf_token %}
+</form>
+
 
 <script>
 function confirmarEliminarDetalle(id) {
@@ -185,7 +189,9 @@ function confirmarEliminarDetalle(id) {
     cancelButtonText: 'Cancelar'
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = '/detalle/eliminar/' + id;
+            const form = document.getElementById('formEliminarDetalle');
+            form.action = '/detalle/eliminar/' + id + '/';
+            form.submit();
     }
   });
 }

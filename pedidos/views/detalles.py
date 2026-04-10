@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
@@ -68,6 +69,7 @@ def editar_detalle(request, pk):
 
 # aqui eliminamos detalle y devolvemos stock
 @login_required
+@require_POST
 def eliminar_detalle(request, pk):
     detalle              = get_object_or_404(DetallePedido, pk=pk)
     producto             = detalle.producto
