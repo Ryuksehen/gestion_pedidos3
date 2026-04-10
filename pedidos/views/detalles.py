@@ -36,9 +36,10 @@ def agregar_detalle(request, pedido_id):
             detalle.save()
             messages.success(request, 'Producto agregado al pedido')
             return redirect('detalle', pk=pedido.id)
+        messages.error(request, 'No se pudo agregar el producto. Revisa los datos del formulario.')
+        return redirect('detalle', pk=pedido.id)
     else:
-        form = DetallePedidoForm()
-    return render(request, 'pedidos/agregar_detalle.html', {'form': form, 'pedido': pedido})
+        return redirect('detalle', pk=pedido.id)
 
 
 # aqui editamos cantidad y ajustamos stock
@@ -60,7 +61,9 @@ def editar_detalle(request, pk):
         detalle_editado.save()
         messages.success(request, 'Producto actualizado correctamente')
         return redirect('detalle', pk=detalle.pedido.id)
-    return render(request, 'pedidos/editar_detalle.html', {'form': form})
+    if request.method == 'POST':
+        messages.error(request, 'No se pudo actualizar el producto del pedido. Revisa los datos del formulario.')
+    return redirect('detalle', pk=detalle.pedido.id)
 
 
 # aqui eliminamos detalle y devolvemos stock

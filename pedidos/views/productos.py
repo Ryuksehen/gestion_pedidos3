@@ -16,6 +16,12 @@ class ProductoListView(LoginRequiredMixin, ListView):
     paginate_by         = 10
     ordering            = ['id']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        productos = context['productos']
+        context['formularios_editar_producto'] = [(producto, ProductoForm(instance=producto)) for producto in productos]
+        return context
+
 
 # aqui creamos producto nuevo
 @login_required
@@ -40,7 +46,9 @@ def editar_producto(request, pk):
         form.save()
         messages.success(request, 'Producto actualizado correctamente')
         return redirect('listar_productos')
-    return render(request, 'productos/editar.html', {'form': form})
+    if request.method == 'POST':
+        messages.error(request, 'No se pudo actualizar el producto. Revisa los datos del formulario.')
+    return redirect('listar_productos')
 
 
 # aqui eliminamos producto si no tiene detalles

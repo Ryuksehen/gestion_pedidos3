@@ -16,6 +16,12 @@ class ClienteListView(LoginRequiredMixin, ListView):
     paginate_by         = 10
     ordering            = ['id']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        clientes = context['clientes']
+        context['formularios_editar_cliente'] = [(cliente, ClienteForm(instance=cliente)) for cliente in clientes]
+        return context
+
 
 # aqui creamos un cliente nuevo
 @login_required
@@ -40,7 +46,9 @@ def editar_cliente(request, pk):
         form.save()
         messages.success(request, 'Cliente actualizado correctamente')
         return redirect('listar_clientes')
-    return render(request, 'clientes/editar.html', {'form': form})
+    if request.method == 'POST':
+        messages.error(request, 'No se pudo actualizar el cliente. Revisa los datos del formulario.')
+    return redirect('listar_clientes')
 
 
 # aqui borramos cliente si no tiene pedidos

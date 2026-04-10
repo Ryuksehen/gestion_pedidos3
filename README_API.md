@@ -12,24 +12,41 @@ http://127.0.0.1:8000
 
 ## 2) Donde modificar el tiempo de duracion del token
 
-En este proyecto el JWT es manual (no usa SimpleJWT), por eso la duracion se cambia en codigo:
+En este proyecto el JWT es manual (no usa SimpleJWT), y la configuracion se cambia en UN solo lugar:
 
-1. Archivo: pedidos/views/auth.py
-2. Funcion: create_jwt_token(user, expires_in=3600)
-3. Clave: el parametro expires_in esta en segundos.
+1. Archivo: proyecto_pedidos/settings.py
+2. Variables:
+  - JWT_ACCESS_TOKEN_LIFETIME_SECONDS
+  - JWT_EXPIRY_WARNING_SECONDS
+  - JWT_INACTIVITY_TIMEOUT_SECONDS
+  - JWT_INACTIVITY_WARNING_SECONDS
 
-Ejemplo rapido:
-- 3600 = 1 hora
-- 7200 = 2 horas
-- 1800 = 30 minutos
+Importante:
+1. NO necesitas cambiar auth.py ni api.py cada vez.
+2. Esos archivos ya leen los valores de settings automaticamente.
+3. Si cambias tiempos, reinicia servidor y vuelve a iniciar sesion.
 
-Ademas, para que la cookie coincida con ese tiempo, ajusta tambien max_age=3600 en:
+Ejemplo rapido de prueba:
+- JWT_ACCESS_TOKEN_LIFETIME_SECONDS = 300
+- JWT_EXPIRY_WARNING_SECONDS = 60
+- JWT_INACTIVITY_TIMEOUT_SECONDS = 180
+- JWT_INACTIVITY_WARNING_SECONDS = 30
 
-1. pedidos/views/auth.py (en login_view)
-2. pedidos/views/api.py (en ApiLoginView)
 
-Recomendacion:
-- Usa el mismo valor para expires_in y max_age, para evitar que el token y la cookie se desincronicen.
+## 2.1) Login y registro usan URL diferente? (respuesta corta: SI)
+
+Si, son endpoints distintos y cada uno cumple una funcion diferente:
+
+1. Obtener token (login): POST /api/auth/login/
+2. Registrar usuario: POST /api/auth/registro/
+3. Cerrar sesion/token: POST /api/auth/logout/
+4. Ver estado del token web: GET /api/auth/token-status/
+5. Renovar token web: POST /api/auth/refresh/
+
+Resumen simple:
+1. Registro crea el usuario.
+2. Login valida usuario+clave y te devuelve token.
+3. Sin login no hay token para Authorization Bearer.
 
 ## 3) Como obtener el token en Postman
 
@@ -107,6 +124,8 @@ Si quieres, luego puedo agregarte endpoints de usuarios para GET, POST, PUT, PAT
 1. POST /api/auth/login/
 2. POST /api/auth/registro/
 3. POST /api/auth/logout/
+4. GET /api/auth/token-status/
+5. POST /api/auth/refresh/
 
 ## 5.2 Clientes
 
@@ -229,3 +248,4 @@ Notas:
 3. Copiar token de la respuesta.
 4. Agregar header Authorization: Bearer TU_TOKEN.
 5. Probar CRUD (GET/POST/PUT/PATCH/DELETE) en clientes, productos, pedidos y detalles.
+6. Si quieres renovar sesion web, usar /api/auth/refresh/.

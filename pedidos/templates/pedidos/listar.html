@@ -2,18 +2,30 @@
 
 {% block content %}
 
-<div class="card shadow-sm border-0 fixed-list-card">
+<div class="card shadow-lg border-0 bg-white text-dark fixed-list-card">
 
     
-    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+    <div class="card-header bg-body-tertiary text-dark border-bottom border-2 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">Pedidos</h5>
 
-        <a href="{% url 'crear' %}" 
-           class="text-dark text-decoration-none icon-hover"
-           title="Nuevo Pedido">
-            <i class="bi bi-plus-lg"></i>
-            <span class="ms-1">Nuevo Pedido</span>
-        </a>
+        <div class="d-flex align-items-center gap-3">
+            <a href="#"
+               class="text-dark text-decoration-none icon-hover fw-semibold"
+               data-bs-toggle="modal"
+               data-bs-target="#modalCrearPedido"
+               title="Nuevo Pedido">
+                <i class="bi bi-plus-lg"></i>
+                <span class="ms-1">Nuevo Pedido</span>
+            </a>
+            <a href="#"
+               class="text-dark text-decoration-none icon-hover fw-semibold"
+               data-bs-toggle="modal"
+               data-bs-target="#modalCrearConProducto"
+               title="Agregar producto">
+                <i class="bi bi-bag-plus"></i>
+                <span class="ms-1">Agregar producto</span>
+            </a>
+        </div>
     </div>
 
     <div class="card-body">
@@ -21,7 +33,7 @@
         
         <div class="mb-3 d-flex justify-content-between">
 
-            <span class="text-muted small">
+            <span class="text-dark small">
                 Gestión de pedidos
             </span>
 
@@ -43,10 +55,10 @@
 
         
         <div class="table-responsive">
-            <table class="table align-middle text-center">
+            <table class="table table-hover table-striped align-middle text-center">
 
                 <thead class="border-bottom">
-                    <tr class="text-muted small">
+                    <tr class="text-dark small">
                         <th>ID</th>
                         <th>Cliente</th>
                         <th>Correo</th>
@@ -61,11 +73,11 @@
                     <tr class="border-bottom">
                         <td>{{ p.id }}</td>
                         <td class="fw-medium">{{ p.cliente.nombre }}</td>
-                        <td class="text-muted">{{ p.cliente.correo }}</td>
+                        <td class="text-dark">{{ p.cliente.correo }}</td>
                         <td>{{ p.fecha }}</td>
 
                         <td>
-                            <span class="badge bg-light text-dark border">
+                            <span class="badge text-bg-secondary rounded-pill px-3">
                                 {{ p.estado }}
                             </span>
                         </td>
@@ -73,15 +85,19 @@
                         <td>
                             <div class="d-flex justify-content-center gap-3">
 
-                                <a href="/detalle/{{p.id}}" class="text-dark icon-hover" title="Ver">
-                                    <i class="bi bi-eye"></i> Añadir prod.
+                                <a href="/detalle/{{p.id}}" class="text-dark icon-hover fw-semibold" title="Ver detalle">
+                                    <i class="bi bi-eye"></i> Ver detalle
                                 </a>
 
-                                <a href="/editar/{{p.id}}" class="text-dark icon-hover" title="Editar">
+                                <a href="#"
+                                   class="text-dark icon-hover fw-semibold"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#modalEditarPedido{{ p.id }}"
+                                   title="Editar">
                                     <i class="bi bi-pencil"></i> Editar
                                 </a>
 
-                                <a href="#" onclick="confirmarEliminacion({{p.id}})" class="text-dark icon-hover" title="Eliminar">
+                                <a href="#" onclick="confirmarEliminacion({{p.id}})" class="text-dark icon-hover fw-semibold" title="Eliminar">
                                     <i class="bi bi-trash"></i> Eliminar
                                 </a>
 
@@ -91,7 +107,7 @@
 
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-muted">
+                        <td colspan="6" class="text-dark">
                             No hay pedidos registrados
                         </td>
                     </tr>
@@ -104,37 +120,37 @@
         
         <div class="mt-3 d-flex justify-content-between align-items-center">
 
-            <div class="small text-muted">
+            <div class="small text-dark">
                 Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
             </div>
 
             <div class="d-flex gap-2">
                     {% if is_paginated %}
-                    <a href="?page=1" class="btn btn-sm btn-outline-secondary">Primera</a>
+                    <a href="?page=1" class="btn btn-sm btn-outline-dark">Primera</a>
 
                     {% if page_obj.has_previous %}
-                        <a href="?page={{ pedidos.previous_page_number }}" class="btn btn-sm btn-outline-secondary">Anterior</a>
+                        <a href="?page={{ pedidos.previous_page_number }}" class="btn btn-sm btn-outline-dark">Anterior</a>
                     {% else %}
-                        <button class="btn btn-sm btn-outline-secondary" disabled>Anterior</button>
+                        <button class="btn btn-sm btn-outline-dark" disabled>Anterior</button>
                     {% endif %}
 
                     {% for page in page_obj.paginator.page_range %}
                         {% if page == page_obj.number %}
-                            <span class="btn btn-sm btn-primary">{{ page }}</span>
+                            <span class="btn btn-sm btn-danger">{{ page }}</span>
                         {% else %}
-                            <a href="?page={{ page }}" class="btn btn-sm btn-outline-secondary">{{ page }}</a>
+                            <a href="?page={{ page }}" class="btn btn-sm btn-outline-dark">{{ page }}</a>
                         {% endif %}
                     {% endfor %}
 
                     {% if pedidos.has_next %}
-                        <a href="?page={{ pedidos.next_page_number }}" class="btn btn-sm btn-outline-secondary">Siguiente</a>
+                        <a href="?page={{ pedidos.next_page_number }}" class="btn btn-sm btn-outline-dark">Siguiente</a>
                     {% else %}
-                        <button class="btn btn-sm btn-outline-secondary" disabled>Siguiente</button>
+                        <button class="btn btn-sm btn-outline-dark" disabled>Siguiente</button>
                     {% endif %}
 
-                    <a href="?page={{ pedidos.paginator.num_pages }}" class="btn btn-sm btn-outline-secondary">Última</a>
+                    <a href="?page={{ pedidos.paginator.num_pages }}" class="btn btn-sm btn-outline-dark">Última</a>
                 {% else %}
-                    <span class="text-muted">No hay más páginas</span>
+                    <span class="text-dark">No hay más páginas</span>
                 {% endif %}
             </div>
 
@@ -143,6 +159,114 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalCrearConProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pedido + Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'crear_con_producto' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        <select name="cliente_id" class="form-control" required>
+                            <option value="" selected disabled>Selecciona un cliente</option>
+                            {% for cliente in clientes_disponibles %}
+                            <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Producto</label>
+                        <select name="producto_id" class="form-control" required>
+                            <option value="" selected disabled>Selecciona un producto</option>
+                            {% for producto in productos_disponibles %}
+                            <option value="{{ producto.id }}">{{ producto.nombre }} (stock: {{ producto.stock }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" name="cantidad" min="1" value="1" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Crear pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCrearPedido" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'crear' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        {{ form_crear_pedido.cliente }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha</label>
+                        {{ form_crear_pedido.fecha }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Estado</label>
+                        {{ form_crear_pedido.estado }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% for pedido_item, form_editar in formularios_editar_pedido %}
+<div class="modal fade" id="modalEditarPedido{{ pedido_item.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Pedido #{{ pedido_item.id }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'editar' pedido_item.id %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        {{ form_editar.cliente }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha</label>
+                        {{ form_editar.fecha }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Estado</label>
+                        {{ form_editar.estado }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 <script>
 function confirmarEliminacion(id) {
   Swal.fire({
@@ -150,9 +274,9 @@ function confirmarEliminacion(id) {
     text: 'No se puede deshacer',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#009bd8', // Un azul estándar
-    cancelButtonColor: '#d33',    // Un rojo para cancelar
-    iconColor: '#ff0000',
+    confirmButtonColor: '#2B2B2B', // Un azul estándar
+    cancelButtonColor: '#D8CFC4',    // Un rojo para cancelar
+    iconColor: '#FF3B30',
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar'
   }).then((result) => {
@@ -164,3 +288,11 @@ function confirmarEliminacion(id) {
 </script>
 
 {% endblock %}
+
+
+
+
+
+
+
+

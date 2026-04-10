@@ -108,3 +108,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# aqui centralizamos tiempos de sesion jwt
+# duracion total del token de acceso (en segundos)
+JWT_ACCESS_TOKEN_LIFETIME_SECONDS = 30
+# cuando falten estos segundos para expirar, mostramos alerta con cuenta regresiva
+JWT_EXPIRY_WARNING_SECONDS = 20
+# si no hay actividad del usuario durante este tiempo, se cierra sesion
+JWT_INACTIVITY_TIMEOUT_SECONDS = 180
+# segundos de aviso previo antes del cierre por inactividad
+JWT_INACTIVITY_WARNING_SECONDS = 15

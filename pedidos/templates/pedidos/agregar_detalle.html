@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white border-bottom">
+<div class="card shadow-lg border-0 bg-white text-dark">
+    <div class="card-header bg-body-tertiary text-dark border-bottom border-2">
         <h5 class="mb-0 fw-semibold">Agregar Producto al Pedido #{{ pedido.id }}</h5>
     </div>
     <div class="card-body">
@@ -23,10 +23,10 @@
                 </div>
             {% endfor %}
             <div class="d-flex justify-content-between align-items-center">
-                <a href="/detalle/{{ pedido.id }}" class="text-muted text-decoration-none small icon-hover">
+                <a href="/detalle/{{ pedido.id }}" class="text-dark text-decoration-none small icon-hover">
                     ← Volver
                 </a>
-                <button type="submit" class="btn btn-dark">
+                <button type="submit" class="btn btn-danger">
                     Agregar
                 </button>
             </div>
@@ -34,3 +34,10 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+
+
+
+

@@ -1,4 +1,5 @@
 from django.contrib.auth import logout
+from django.conf import settings
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -90,7 +91,9 @@ class ApiLoginView(APIView):
         serializer = ApiLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token = create_jwt_token(user)
+        # tiempo de vida del token API, tomado del mismo ajuste central
+        lifetime = int(getattr(settings, 'JWT_ACCESS_TOKEN_LIFETIME_SECONDS', 3600))
+        token = create_jwt_token(user, expires_in=lifetime)
 
         response = Response(
             {
@@ -106,7 +109,7 @@ class ApiLoginView(APIView):
             token,
             httponly=True,
             samesite='Lax',
-            max_age=30,
+            max_age=lifetime,
         )
         return response
 

@@ -2,17 +2,19 @@
 
 {% block content %}
 
-<div class="card shadow-sm border-0">
+<div class="card shadow-lg border-0 bg-white text-dark">
 
     
-    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+    <div class="card-header bg-body-tertiary text-dark border-bottom border-2 d-flex justify-content-between align-items-center">
         
         <h5 class="mb-0 fw-semibold">
             Pedido #{{ pedido.id }}
         </h5>
 
-        <a href="/pedido/{{pedido.id}}/agregar/" 
-           class="text-dark text-decoration-none icon-hover"
+          <a href="#"
+              class="text-dark text-decoration-none icon-hover fw-semibold"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarProducto"
            title="Agregar Producto">
             <i class="bi bi-plus-lg"></i>
             <span class="ms-1">Agregar Producto</span>
@@ -25,17 +27,17 @@
         
         <div class="mb-3">
 
-            <div class="small text-muted">
+            <div class="small text-dark">
                 Información del pedido
             </div>
 
             <div class="mt-2">
                 <strong>Cliente:</strong> {{ pedido.cliente.nombre }} <br>
-                <strong>Correo:</strong> <span class="text-muted">{{ pedido.cliente.correo }}</span> <br>
+                <strong>Correo:</strong> <span class="text-dark">{{ pedido.cliente.correo }}</span> <br>
                 <strong>Fecha:</strong> {{ pedido.fecha }} <br>
 
                 <strong>Estado:</strong>
-                <span class="badge bg-light text-dark border">
+                <span class="badge text-bg-secondary rounded-pill px-3">
                     {{ pedido.estado }}
                 </span>
             </div>
@@ -44,10 +46,10 @@
 
         
         <div class="table-responsive">
-            <table class="table align-middle text-center">
+            <table class="table table-hover table-striped align-middle text-center">
 
                 <thead class="border-bottom">
-                    <tr class="text-muted small">
+                    <tr class="text-dark small">
                         <th>Producto</th>
                         <th>Cantidad</th>
                         <th>Subtotal</th>
@@ -61,14 +63,16 @@
 
                         <td class="fw-medium">{{ d.producto.nombre }}</td>
                         <td>{{ d.cantidad }}</td>
-                        <td class="text-muted">${{ d.subtotal }}</td>
+                        <td class="text-dark">${{ d.subtotal }}</td>
 
                         <td>
                             <div class="d-flex justify-content-center gap-3">
 
                                 
-                                <a href="/detalle/editar/{{d.id}}" 
-                                   class="text-dark icon-hover"
+                                          <a href="#"
+                                              class="text-dark icon-hover fw-semibold"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#modalEditarDetalle{{ d.id }}"
                                    title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
@@ -76,7 +80,7 @@
                                 
                                 <a href="#" 
                                    onclick="confirmarEliminarDetalle({{d.id}})"
-                                   class="text-dark icon-hover"
+                                   class="text-dark icon-hover fw-semibold"
                                    title="Eliminar">
                                     <i class="bi bi-trash"></i>
                                 </a>
@@ -88,7 +92,7 @@
 
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-muted">
+                        <td colspan="4" class="text-dark">
                             No hay productos en este pedido
                         </td>
                     </tr>
@@ -100,13 +104,71 @@
 
         
         <div class="mt-3">
-            <a href="/" class="text-muted text-decoration-none small icon-hover">
+            <a href="/" class="text-dark text-decoration-none small icon-hover">
                 ← Volver a pedidos
             </a>
         </div>
 
     </div>
 </div>
+
+<div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Producto al Pedido #{{ pedido.id }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'agregar_detalle' pedido.id %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Producto</label>
+                        {{ form_agregar_detalle.producto }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Cantidad</label>
+                        {{ form_agregar_detalle.cantidad }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% for detalle_item, form_editar_detalle in formularios_editar_detalle %}
+<div class="modal fade" id="modalEditarDetalle{{ detalle_item.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Producto del Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'editar_detalle' detalle_item.id %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Producto</label>
+                        {{ form_editar_detalle.producto }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Cantidad</label>
+                        {{ form_editar_detalle.cantidad }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 
 <script>
@@ -116,9 +178,9 @@ function confirmarEliminarDetalle(id) {
     text: 'Se eliminará del pedido y se restaurará el stock',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#009bd8', // Un azul estándar
-    cancelButtonColor: '#d33',    // Un rojo para cancelar
-    iconColor: '#ff0000',
+    confirmButtonColor: '#2B2B2B', // Un azul estándar
+    cancelButtonColor: '#D8CFC4',    // Un rojo para cancelar
+    iconColor: '#FF3B30',
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar'
   }).then((result) => {
@@ -130,3 +192,11 @@ function confirmarEliminarDetalle(id) {
 </script>
 
 {% endblock %}
+
+
+
+
+
+
+
+

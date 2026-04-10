@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white border-bottom">
+<div class="card shadow-lg border-0 bg-white text-dark">
+    <div class="card-header bg-body-tertiary text-dark border-bottom border-2">
         <h5 class="mb-0 fw-semibold">Editar Producto del Pedido</h5>
     </div>
 
@@ -26,7 +26,7 @@
             {% endfor %}
 
             <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-dark w-100" onclick="confirmarGuardar()">
+                <button type="button" class="btn btn-danger w-100" onclick="confirmarGuardar()">
                     Guardar cambios
                 </button>
             </div>
@@ -41,8 +41,8 @@ function confirmarGuardar() {
         text: 'Se actualizará la cantidad del producto en el pedido.',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#212529',
-        cancelButtonColor: '#6c757d',
+        confirmButtonColor: '#2B2B2B',
+        cancelButtonColor: '#D8CFC4',
         confirmButtonText: 'Sí, guardar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
@@ -53,3 +53,10 @@ function confirmarGuardar() {
 }
 </script>
 {% endblock %}
+
+
+
+
+
+
+

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+<div class="card shadow-lg border-0 bg-white text-dark">
+    <div class="card-header bg-body-tertiary text-dark border-bottom border-2 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">Clientes</h5>
         <a href="{% url 'crear_cliente' %}" 
-           class="text-dark text-decoration-none icon-hover"
+           class="text-dark text-decoration-none icon-hover fw-semibold"
            title="Nuevo Cliente">
             <i class="bi bi-plus-lg"></i>
             <span class="ms-1">Nuevo Cliente</span>
@@ -13,7 +13,7 @@
     </div>
     <div class="card-body">
         <div class="mb-3 d-flex justify-content-between">
-            <span class="text-muted small">
+            <span class="text-dark small">
                 Gestión de clientes
             </span>
             <div class="d-flex gap-3">
@@ -23,9 +23,9 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table align-middle text-center">
+            <table class="table table-hover table-striped align-middle text-center">
                 <thead class="border-bottom">
-                    <tr class="text-muted small">
+                    <tr class="text-dark small">
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Correo</th>
@@ -39,19 +39,21 @@
                     <tr class="border-bottom">
                         <td>{{ c.id }}</td>
                         <td class="fw-medium">{{ c.nombre }}</td>
-                        <td class="text-muted">{{ c.correo }}</td>
+                        <td class="text-dark">{{ c.correo }}</td>
                         <td>{{ c.telefono }}</td>
                         <td>{{ c.direccion }}</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <a href="/clientes/editar/{{c.id}}" 
-                                   class="text-dark icon-hover"
+                                          <a href="#"
+                                              class="text-dark icon-hover fw-semibold"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#modalEditarCliente{{ c.id }}"
                                    title="Editar">
                                     <i class="bi bi-pencil"></i> Editar
                                 </a>
                                 <a href="#" 
                                    onclick="confirmarEliminacionCliente({{c.id}})"
-                                   class="text-dark icon-hover"
+                                   class="text-dark icon-hover fw-semibold"
                                    title="Eliminar">
                                     <i class="bi bi-trash"></i> Eliminar
                                 </a>
@@ -60,7 +62,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-muted">
+                        <td colspan="6" class="text-dark">
                             No hay clientes registrados
                         </td>
                     </tr>
@@ -69,39 +71,78 @@
             </table>
         </div>
         <div class="mt-3 d-flex justify-content-between align-items-center">
-            <div class="small text-muted">
+            <div class="small text-dark">
                 Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}
             </div>
             <div class="d-flex gap-2">
                 {% if clientes.paginator.num_pages > 1 %}
-                    <a href="?page=1" class="btn btn-sm btn-outline-secondary">Primera</a>
+                    <a href="?page=1" class="btn btn-sm btn-outline-dark">Primera</a>
 
                     {% if clientes.has_previous %}
-                        <a href="?page={{ clientes.previous_page_number }}" class="btn btn-sm btn-outline-secondary">Anterior</a>
+                        <a href="?page={{ clientes.previous_page_number }}" class="btn btn-sm btn-outline-dark">Anterior</a>
                     {% else %}
-                        <button class="btn btn-sm btn-outline-secondary" disabled>Anterior</button>
+                        <button class="btn btn-sm btn-outline-dark" disabled>Anterior</button>
                     {% endif %}
 
                     {% for page in clientes.paginator.page_range %}
                         {% if page == clientes.number %}
-                            <span class="btn btn-sm btn-primary">{{ page }}</span>
+                            <span class="btn btn-sm btn-danger">{{ page }}</span>
                         {% else %}
-                            <a href="?page={{ page }}" class="btn btn-sm btn-outline-secondary">{{ page }}</a>
+                            <a href="?page={{ page }}" class="btn btn-sm btn-outline-dark">{{ page }}</a>
                         {% endif %}
                     {% endfor %}
                     {% if clientes.has_next %}
-                        <a href="?page={{ clientes.next_page_number }}" class="btn btn-sm btn-outline-secondary">Siguiente</a>
+                        <a href="?page={{ clientes.next_page_number }}" class="btn btn-sm btn-outline-dark">Siguiente</a>
                     {% else %}
-                        <button class="btn btn-sm btn-outline-secondary" disabled>Siguiente</button>
+                        <button class="btn btn-sm btn-outline-dark" disabled>Siguiente</button>
                     {% endif %}
-                    <a href="?page={{ clientes.paginator.num_pages }}" class="btn btn-sm btn-outline-secondary">Última</a>
+                    <a href="?page={{ clientes.paginator.num_pages }}" class="btn btn-sm btn-outline-dark">Última</a>
                 {% else %}
-                    <span class="text-muted">No hay más páginas</span>
+                    <span class="text-dark">No hay más páginas</span>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+{% for cliente_item, form_editar in formularios_editar_cliente %}
+<div class="modal fade" id="modalEditarCliente{{ cliente_item.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Cliente #{{ cliente_item.id }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'editar_cliente' cliente_item.id %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        {{ form_editar.nombre }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo</label>
+                        {{ form_editar.correo }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        {{ form_editar.telefono }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Dirección</label>
+                        {{ form_editar.direccion }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 <script>
 function confirmarEliminacionCliente(id) {
   Swal.fire({
@@ -109,9 +150,9 @@ function confirmarEliminacionCliente(id) {
     text: 'Esta acción no se puede deshacer',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#009bd8', // Un azul estándar
-    cancelButtonColor: '#d33',    // Un rojo para cancelar
-    iconColor: '#ff0000',
+    confirmButtonColor: '#2B2B2B', // Un azul estándar
+    cancelButtonColor: '#D8CFC4',    // Un rojo para cancelar
+    iconColor: '#FF3B30',
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar'
   }).then((result) => {
@@ -123,3 +164,10 @@ function confirmarEliminacionCliente(id) {
 </script>
 
 {% endblock %}
+
+
+
+
+
+
+

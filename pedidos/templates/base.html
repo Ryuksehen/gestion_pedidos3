@@ -3,21 +3,158 @@
 <head>
     <!-- aqui arrancamos la cabecera base de la pagina -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Pedidos</title>
     
      
     <!-- aqui cargamos iconos para usar en el menu -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- aqui cargamos bootstrap para el estilo general -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- aqui traemos sweetalert para las alertas bonitas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --ed-cream: #F5EFE6;
+            --ed-beige: #D8CFC4;
+            --ed-ink: #2B2B2B;
+            --ed-coral: #FF3B30;
+            --ed-wine: #7E1F1F;
+            --ed-lime: #95B844;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--ed-ink);
+            background-color: var(--ed-cream) !important;
+            background-image:
+                radial-gradient(circle at 8% 12%, rgba(255, 59, 48, 0.18) 0, rgba(255, 59, 48, 0) 35%),
+                radial-gradient(circle at 92% 86%, rgba(126, 31, 31, 0.16) 0, rgba(126, 31, 31, 0) 34%),
+                repeating-radial-gradient(circle at center, rgba(43, 43, 43, 0.035) 0 1px, transparent 1px 4px);
+        }
+
+        h4,
+        h5 {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-editorial {
+            background: linear-gradient(160deg, #f2e8dc 0%, #ddd2c3 55%, #d2c6b8 100%) !important;
+            border-right: 2px solid rgba(43, 43, 43, 0.15) !important;
+            box-shadow: 8px 0 20px rgba(43, 43, 43, 0.08);
+        }
+
+        .sidebar-editorial .nav-link {
+            border-radius: 0.7rem;
+            font-weight: 500;
+            transition: all 0.18s ease;
+        }
+
+        .sidebar-editorial .nav-link:hover {
+            color: var(--ed-coral) !important;
+            background-color: rgba(255, 59, 48, 0.08);
+            transform: translateX(4px);
+        }
+
+        .perfil-mini {
+            border: 1px solid rgba(43, 43, 43, 0.15);
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 0.9rem;
+            padding: 0.7rem;
+        }
+
+        .perfil-mini .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, var(--ed-coral), var(--ed-wine));
+            font-size: 0.9rem;
+        }
+
+        .panel-title {
+            color: var(--ed-ink) !important;
+            text-shadow: 2px 2px 0 rgba(255, 59, 48, 0.12);
+        }
+
+        .card {
+            border: 1px solid rgba(43, 43, 43, 0.12) !important;
+            box-shadow: 0 10px 24px rgba(43, 43, 43, 0.12) !important;
+            border-radius: 1rem !important;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(120deg, #efe5d7 0%, #d8cfc4 100%) !important;
+            color: var(--ed-ink) !important;
+            border-bottom: 1px solid rgba(43, 43, 43, 0.15) !important;
+        }
+
+        .table-responsive {
+            border-radius: 0.8rem;
+        }
+
+        .table {
+            --bs-table-bg: transparent;
+            --bs-table-striped-bg: rgba(216, 207, 196, 0.32);
+            --bs-table-hover-bg: rgba(255, 59, 48, 0.12);
+            --bs-table-border-color: rgba(43, 43, 43, 0.14);
+            color: var(--ed-ink);
+        }
+
+        .badge.text-bg-secondary {
+            background-color: #cec2b3 !important;
+            color: var(--ed-ink) !important;
+            border: 1px solid rgba(43, 43, 43, 0.2);
+        }
+
+        .btn-danger {
+            background-color: var(--ed-coral);
+            border-color: var(--ed-coral);
+            box-shadow: 3px 3px 0 var(--ed-wine);
+        }
+
+        .btn-danger:hover {
+            background-color: #e63228;
+            border-color: #e63228;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-dark {
+            border-color: rgba(43, 43, 43, 0.55);
+            color: var(--ed-ink);
+        }
+
+        .btn-outline-dark:hover {
+            background-color: var(--ed-ink);
+            border-color: var(--ed-ink);
+            color: #fff;
+        }
+
+        .icon-hover {
+            transition: color 0.18s ease, transform 0.18s ease;
+        }
+
+        .icon-hover:hover {
+            color: var(--ed-coral) !important;
+            transform: translateY(-1px);
+        }
+
+        hr {
+            border-color: rgba(43, 43, 43, 0.22);
+        }
+
         /* aqui damos alto fijo a las tarjetas con tablas */
         .fixed-list-card {
-            min-height: 680px;
-            max-height: 680px;
+            min-height: calc(100vh - 10rem);
+            max-height: none;
             display: flex;
             flex-direction: column;
         }
@@ -42,12 +179,12 @@
         }
     </style>
 </head>
-<body class="bg-light">
-<div class="d-flex">
+<body class="bg-light text-dark">
+<div class="d-flex min-vh-100 w-100 align-items-stretch">
     
     <!-- aqui va el menu lateral para moverse por el sistema -->
-    <div class="bg-white border-end p-3" style="width: 220px; min-height: 100vh;">
-        <h5 class="mb-4">Sistema</h5>
+    <div class="bg-body-tertiary border-end p-3 sidebar-editorial d-flex flex-column" style="width: 220px; min-height: 100vh;">
+        <h5 class="mb-4 text-dark">Sistema</h5>
         <ul class="nav flex-column gap-2">
             <li>
                 <a href="/" class="nav-link text-dark icon-hover">
@@ -69,25 +206,39 @@
                     <i class="bi bi-list-columns"></i> Todos los Detalles
                 </a>
             </li>
-            <hr>
-            <li>
-                <a href="#" class="nav-link text-danger" onclick="confirmarLogout(event)">
-                    <i class="bi bi-box-arrow-right"></i> Salir
-                </a>
-            </li>
         </ul>
+
+        <div class="mt-auto pt-3 border-top">
+            <div class="perfil-mini d-flex align-items-center gap-2 mb-2">
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <div>
+                    {% if request.user.is_authenticated %}
+                    <div class="small fw-semibold lh-1">{{ request.user.username }}</div>
+                    <div class="small text-muted">Sesion activa</div>
+                    {% else %}
+                    <div class="small fw-semibold lh-1">Invitado</div>
+                    <div class="small text-muted">Sin iniciar sesion</div>
+                    {% endif %}
+                </div>
+            </div>
+            <a href="#" class="nav-link text-danger icon-hover" onclick="confirmarLogout(event)">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </a>
+        </div>
     </div>
     
     <!-- aqui va el contenido principal de cada vista -->
-    <div class="flex-grow-1 p-4">
+    <div class="flex-grow-1 p-4 d-flex flex-column min-vh-100">
         
         <!-- aqui dejamos un titulo base del panel -->
         <div class="d-flex justify-content-between mb-4">
-            <h4 class="fw-semibold">Panel</h4>
+            <h4 class="fw-semibold text-dark panel-title">Panel</h4>
         </div>
         <!-- aqui se pinta el bloque de contenido de cada pagina -->
-        {% block content %}
-        {% endblock %}
+        <div class="flex-grow-1 d-flex flex-column">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 </div>
 {% if messages %}
@@ -97,21 +248,21 @@
         {% if message.tags == "error" %}
             Swal.fire({
                 icon: 'error',
-                iconColor: '#dc3545',
+                iconColor: '#FF3B30',
                 title: '{{ message }}',
                 confirmButtonText: 'Aceptar'
             });
         {% elif message.tags == "success" %}
             Swal.fire({
                 icon: 'success',
-                iconColor: '#198754',
+                iconColor: '#FF3B30',
                 title: '{{ message }}',
                 confirmButtonText: 'Aceptar'
             });
         {% else %}
             Swal.fire({
                 icon: 'info',
-                iconColor: '#0d6efd',
+                iconColor: '#2B2B2B',
                 title: '{{ message }}',
                 confirmButtonText: 'Aceptar'
             });
@@ -127,12 +278,12 @@ function confirmarLogout(event) {
         title: 'Cerrar sesion',
         text: 'Se cerrara tu sesion actual.',
         icon: 'warning',
-        iconColor: '#dc3545',
+        iconColor: '#FF3B30',
         showCancelButton: true,
         confirmButtonText: 'Si, salir',
         cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#212529',
-        cancelButtonColor: '#6c757d'
+        confirmButtonColor: '#2B2B2B',
+        cancelButtonColor: '#D8CFC4'
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = '{% url "logout" %}';
@@ -143,12 +294,234 @@ function confirmarLogout(event) {
 // aqui ponemos la fecha de hoy en el campo fecha
 function ponerHoy() {
     const inputFecha = document.querySelector('input[name="fecha"]');
+    if (!inputFecha) {
+        return;
+    }
     const hoy = new Date();
     const year = hoy.getFullYear();
     const month = String(hoy.getMonth() + 1).padStart(2, '0');
     const day = String(hoy.getDate()).padStart(2, '0');
     inputFecha.value = `${year}-${month}-${day}`;
 }
+
+// aqui leemos cookie para csrf al renovar token
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+    }
+    return null;
+}
+
+// aqui controlamos expiracion y cierre por inactividad
+(function controlarSesionSegura() {
+    const urlEstado = '{% url "token_status" %}';
+    const urlRefresh = '{% url "token_refresh" %}';
+    const urlLogout = '{% url "logout" %}';
+    const urlLoginSeguridad = '{% url "login" %}?sesion=seguridad';
+
+    let tokenWarningActive = false;
+    let tokenWarningSnoozeUntil = 0;
+    let inactivityWarningActive = false;
+    let lastActivityAt = Date.now();
+
+    let inactivityLimitSeconds = 900;
+    let inactivityWarningSeconds = 60;
+    let tokenWarningSeconds = 120;
+
+    function marcarActividad() {
+        lastActivityAt = Date.now();
+    }
+
+    ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((evt) => {
+        window.addEventListener(evt, marcarActividad, { passive: true });
+    });
+
+    function cerrarPorSeguridad() {
+        window.location.href = urlLoginSeguridad;
+    }
+
+    async function renovarToken() {
+        try {
+            const response = await fetch(urlRefresh, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') || '',
+                },
+                credentials: 'same-origin',
+            });
+
+            if (!response.ok) {
+                cerrarPorSeguridad();
+                return false;
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Sesion renovada',
+                timer: 1200,
+                showConfirmButton: false,
+            });
+            return true;
+        } catch (error) {
+            cerrarPorSeguridad();
+            return false;
+        }
+    }
+
+    function mostrarAlertaExpiracion(segundosIniciales) {
+        if (tokenWarningActive || Date.now() < tokenWarningSnoozeUntil) {
+            return;
+        }
+
+        tokenWarningActive = true;
+        let restantes = segundosIniciales;
+        let intervalo = null;
+
+        Swal.fire({
+            title: 'Sesion por expirar',
+            html: `Por seguridad tu sesion expira en <strong id="contadorExp">${restantes}</strong> segundos.`,
+            icon: 'warning',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Renovar token',
+            denyButtonText: 'Aceptar',
+            cancelButtonText: 'Salir',
+            allowOutsideClick: false,
+            didOpen: () => {
+                intervalo = setInterval(() => {
+                    restantes -= 1;
+                    const nodo = document.getElementById('contadorExp');
+                    if (nodo) {
+                        nodo.textContent = String(Math.max(0, restantes));
+                    }
+                    if (restantes <= 0) {
+                        clearInterval(intervalo);
+                        Swal.close();
+                        cerrarPorSeguridad();
+                    }
+                }, 1000);
+            },
+            willClose: () => {
+                if (intervalo) {
+                    clearInterval(intervalo);
+                }
+            },
+        }).then(async (result) => {
+            tokenWarningActive = false;
+
+            if (result.isConfirmed) {
+                await renovarToken();
+                return;
+            }
+
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                window.location.href = urlLogout;
+                return;
+            }
+
+            tokenWarningSnoozeUntil = Date.now() + 30000;
+        });
+    }
+
+    function mostrarAlertaInactividad(segundosIniciales) {
+        if (inactivityWarningActive) {
+            return;
+        }
+
+        inactivityWarningActive = true;
+        let restantes = segundosIniciales;
+        let intervalo = null;
+
+        Swal.fire({
+            title: 'Cierre por inactividad',
+            html: `Sin actividad detectada. Se cerrara la sesion en <strong id="contadorIna">${restantes}</strong> segundos.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Seguir activo',
+            cancelButtonText: 'Salir',
+            allowOutsideClick: false,
+            didOpen: () => {
+                intervalo = setInterval(() => {
+                    restantes -= 1;
+                    const nodo = document.getElementById('contadorIna');
+                    if (nodo) {
+                        nodo.textContent = String(Math.max(0, restantes));
+                    }
+                    if (restantes <= 0) {
+                        clearInterval(intervalo);
+                        Swal.close();
+                        window.location.href = urlLogout;
+                    }
+                }, 1000);
+            },
+            willClose: () => {
+                if (intervalo) {
+                    clearInterval(intervalo);
+                }
+            },
+        }).then((result) => {
+            inactivityWarningActive = false;
+            if (result.isConfirmed) {
+                lastActivityAt = Date.now();
+                return;
+            }
+            window.location.href = urlLogout;
+        });
+    }
+
+    async function consultarEstadoToken() {
+        try {
+            const response = await fetch(urlEstado, { credentials: 'same-origin' });
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+            tokenWarningSeconds = Number(data.warning_seconds || tokenWarningSeconds);
+            inactivityLimitSeconds = Number(data.inactivity_seconds || inactivityLimitSeconds);
+            inactivityWarningSeconds = Number(data.inactivity_warning_seconds || inactivityWarningSeconds);
+
+            const expiraEn = Number(data.expires_in || 0);
+            if (expiraEn <= 0) {
+                cerrarPorSeguridad();
+                return;
+            }
+
+            if (expiraEn <= tokenWarningSeconds) {
+                mostrarAlertaExpiracion(expiraEn);
+            }
+        } catch (error) {
+            // si falla red o endpoint, no frenamos la app
+        }
+    }
+
+    setInterval(() => {
+        const inactivoSeg = Math.floor((Date.now() - lastActivityAt) / 1000);
+        const restanteSeg = inactivityLimitSeconds - inactivoSeg;
+
+        if (restanteSeg <= 0) {
+            window.location.href = urlLogout;
+            return;
+        }
+
+        if (restanteSeg <= inactivityWarningSeconds) {
+            mostrarAlertaInactividad(restanteSeg);
+        }
+    }, 1000);
+
+    consultarEstadoToken();
+    setInterval(consultarEstadoToken, 15000);
+})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </html>
+
+
+
+
+
+
+
+

@@ -2,17 +2,65 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ed-cream: #F5EFE6;
+            --ed-ink: #2B2B2B;
+            --ed-coral: #FF3B30;
+            --ed-wine: #7E1F1F;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--ed-cream) !important;
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(255, 59, 48, 0.14) 0, rgba(255, 59, 48, 0) 32%),
+                radial-gradient(circle at 90% 85%, rgba(126, 31, 31, 0.12) 0, rgba(126, 31, 31, 0) 34%),
+                repeating-radial-gradient(circle at center, rgba(43, 43, 43, 0.03) 0 1px, transparent 1px 4px);
+            color: var(--ed-ink);
+        }
+
+        .card-editorial {
+            border: 1px solid rgba(43, 43, 43, 0.15);
+            box-shadow: 0 14px 28px rgba(43, 43, 43, 0.16) !important;
+            overflow: hidden;
+        }
+
+        .card-editorial .card-header {
+            background: linear-gradient(120deg, #efe5d7 0%, #d8cfc4 100%) !important;
+        }
+
+        .titulo-editorial {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.08em;
+        }
+
+        .btn-danger {
+            background-color: var(--ed-coral);
+            border-color: var(--ed-coral);
+            box-shadow: 3px 3px 0 var(--ed-wine);
+        }
+
+        .btn-danger:hover {
+            background-color: #e63228;
+            border-color: #e63228;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
 {% block content %}
 
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="card shadow-sm border-0" style="width: 100%; max-width: 450px;">
-        <div class="card-header bg-white border-bottom text-center">
-            <h5 class="mb-0 fw-semibold">Crear cuenta</h5>
+    <div class="card shadow-lg border-0 bg-white text-dark card-editorial" style="width: 100%; max-width: 450px;">
+        <div class="card-header bg-body-tertiary text-dark border-bottom text-center">
+            <h5 class="mb-0 fw-semibold titulo-editorial">Crear cuenta</h5>
         </div>
         <div class="card-body">
             <form method="post">
@@ -36,7 +84,7 @@
                 </div>
 
                 {% if errors %}
-                    <div class="alert alert-danger py-2">
+                    <div class="alert alert-warning py-2">
                         <ul class="mb-0">
                             {% for err in errors %}
                                 <li>{{ err }}</li>
@@ -46,7 +94,7 @@
                 {% endif %}
 
                 <div class="d-grid mb-2">
-                    <button type="submit" class="btn btn-dark">Registrar</button>
+                    <button type="submit" class="btn btn-danger">Registrar</button>
                 </div>
                 <div class="text-center">
                     <a href="{% url 'login' %}">Iniciar sesión</a>
@@ -59,3 +107,10 @@
 {% endblock %}
 </body>
 </html>
+
+
+
+
+
+
+

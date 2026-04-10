@@ -27,6 +27,7 @@ urlpatterns = [
     path('',                       views.home_view,               name='home'),
     path('listar/',                views.PedidoListView.as_view(), name='listar'),
     path('crear/',                 views.crear_pedido,             name='crear'),
+    path('crear-con-producto/',    views.crear_pedido_con_producto, name='crear_con_producto'),
     path('editar/<int:pk>/',       views.editar_pedido,            name='editar'),
     path('eliminar/<int:pk>/',     views.eliminar_pedido,          name='eliminar'),
     path('detalle/<int:pk>/',      views.detalle_pedido,           name='detalle'),
@@ -35,6 +36,8 @@ urlpatterns = [
     path('login/',    views.login_view,    name='login'),
     path('logout/',   views.logout_view,   name='logout'),
     path('registro/', views.register_view, name='register'),
+    path('api/auth/token-status/', views.token_status_view, name='token_status'),
+    path('api/auth/refresh/', views.refresh_token_view, name='token_refresh'),
 
     # aqui van las rutas de clientes
     path('clientes/',                   views.ClienteListView.as_view(), name='listar_clientes'),
