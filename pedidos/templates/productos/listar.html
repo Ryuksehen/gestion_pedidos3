@@ -8,9 +8,11 @@
     <div class="card-header bg-body-tertiary text-dark border-bottom border-2 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">Productos</h5>
 
-        <a href="{% url 'crear_producto' %}" 
-           class="text-dark text-decoration-none icon-hover fw-semibold"
-           title="Nuevo Producto">
+          <a href="#"
+              class="text-dark text-decoration-none icon-hover fw-semibold"
+              data-bs-toggle="modal"
+              data-bs-target="#modalCrearProducto"
+              title="Nuevo Producto">
             <i class="bi bi-plus-lg"></i>
             <span class="ms-1">Nuevo Producto</span>
         </a>
@@ -146,6 +148,38 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="post" action="{% url 'crear_producto' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        {{ form_crear_producto.nombre }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Precio</label>
+                        {{ form_crear_producto.precio }}
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Stock</label>
+                        {{ form_crear_producto.stock }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

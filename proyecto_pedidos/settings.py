@@ -111,7 +111,7 @@ REST_FRAMEWORK = {
 
 # aqui centralizamos tiempos de sesion jwt
 # duracion total del token de acceso (en segundos)
-JWT_ACCESS_TOKEN_LIFETIME_SECONDS = 30
+JWT_ACCESS_TOKEN_LIFETIME_SECONDS = 3069
 # cuando falten estos segundos para expirar, mostramos alerta con cuenta regresiva
 JWT_EXPIRY_WARNING_SECONDS = 20
 # si no hay actividad del usuario durante este tiempo, se cierra sesion

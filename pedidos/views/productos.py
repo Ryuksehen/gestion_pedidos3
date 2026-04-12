@@ -20,6 +20,7 @@ class ProductoListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         productos = context['productos']
+        context['form_crear_producto'] = ProductoForm()
         context['formularios_editar_producto'] = [(producto, ProductoForm(instance=producto)) for producto in productos]
         return context
 
@@ -33,9 +34,9 @@ def crear_producto(request):
             form.save()
             messages.success(request, 'Producto creado correctamente')
             return redirect('listar_productos')
-    else:
-        form = ProductoForm()
-    return render(request, 'productos/crear.html', {'form': form})
+        messages.error(request, 'No se pudo crear el producto. Revisa los datos del formulario.')
+        return redirect('listar_productos')
+    return redirect('listar_productos')
 
 
 # aqui editamos producto existente

@@ -20,6 +20,7 @@ class ClienteListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         clientes = context['clientes']
+        context['form_crear_cliente'] = ClienteForm()
         context['formularios_editar_cliente'] = [(cliente, ClienteForm(instance=cliente)) for cliente in clientes]
         return context
 
@@ -33,9 +34,9 @@ def crear_cliente(request):
             form.save()
             messages.success(request, 'Cliente creado correctamente')
             return redirect('listar_clientes')
-    else:
-        form = ClienteForm()
-    return render(request, 'clientes/crear.html', {'form': form})
+        messages.error(request, 'No se pudo crear el cliente. Revisa los datos del formulario.')
+        return redirect('listar_clientes')
+    return redirect('listar_clientes')
 
 
 # aqui editamos un cliente existente
